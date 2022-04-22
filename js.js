@@ -1,14 +1,12 @@
 var myGamePiece;
 var myObstacles = [];
-var myScore;
 var myBackground;
 
 function startGame() {
-	myGameArea.start();
 	myGamePiece = new component(30, 30, "red", 10, 120);
 	myObstacle = new component(10, 200, "green", 300, 120);
-	myScore = new component("30px", "Consolas", "black", 280, 40, "text");
 	myBackground = new component(656, 270, "citymarket.jpg", 0, 0, "background");
+	myGameArea.start();
 }
 
 var myGameArea = {
@@ -20,6 +18,7 @@ var myGameArea = {
 		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 		this.frameNo = 0;
 		this.interval = setInterval(updateGameArea, 20);
+
 		window.addEventListener("keydown", function (e) {
 			myGameArea.keys = myGameArea.keys || [];
 			myGameArea.keys[e.keyCode] = true;
@@ -35,14 +34,6 @@ var myGameArea = {
 		clearInterval(this.interval);
 	},
 };
-
-function everyinterval(n) {
-	if ((myGameArea.frameNo / n) % 1 == 0) {
-		return true;
-	}
-	return false;
-}
-
 function component(width, height, color, x, y, type) {
 	this.type = type;
 	if (type == "image" || type == "background") {
@@ -81,31 +72,66 @@ function component(width, height, color, x, y, type) {
 			if (this.x == -this.width) {
 				this.x = 0;
 			}
+			this.crashWith = function (otherobj) {
+				var myleft = this.x;
+				var myright = this.x + this.width;
+				var mytop = this.y;
+				var mybottom = this.y + this.height;
+				var otherleft = otherobj.x;
+				var otherright = otherobj.x + otherobj.width;
+				var othertop = otherobj.y;
+				var otherbottom = otherobj.y + otherobj.height;
+				var crash = true;
+				if (
+					mybottom < othertop ||
+					mytop > otherbottom ||
+					myright < otherleft ||
+					myleft > otherright
+				) {
+					crash = false;
+				}
+				return crash;
+			};
 		}
-	};
-	this.crashWith = function (otherobj) {
-		var myleft = this.x;
-		var myright = this.x + this.width;
-		var mytop = this.y;
-		var mybottom = this.y + this.height;
-		var otherleft = otherobj.x;
-		var otherright = otherobj.x + otherobj.width;
-		var othertop = otherobj.y;
-		var otherbottom = otherobj.y + otherobj.height;
-		var crash = true;
-		if (
-			mybottom < othertop ||
-			mytop > otherbottom ||
-			myright < otherleft ||
-			myleft > otherright
-		) {
-			crash = false;
-		}
-		return crash;
 	};
 }
 
 function updateGameArea() {
+	myGameArea.clear();
+	myBackground.speedX = -1;
+	myBackground.newPos();
+	myBackground.update();
+	myGamePiece.newPos();
+	myGamePiece.update();
+	myObstacle.x += -1;
+	myObstacle.update();
+}
+function everyinterval(n) {
+	if ((myGameArea.frameNo / n) % 1 == 0) {
+		return true;
+	}
+	return false;
+}
+
+myGameArea.clear();
+myGameArea.frameNo += 1;
+if (myGameArea.frameNo == 1 || everyinterval(150)) {
+	x = myGameArea.canvas.width;
+	minHeight = 20;
+	maxHeight = 200;
+	height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
+	minGap = 50;
+	maxGap = 200;
+	gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
+	myObstacles.push(
+		new component(10, x - height - gap, "green", x, height + gap)
+	);
+}
+for (i = 0; i < myObstacles.length; i += 1) {
+	myObstacles[i].x += -1;
+	myObstacles[i].update();
+}
+function move(dir) {
 	if (myGamePiece.crashWith(myObstacle)) {
 		myGameArea.stop();
 	} else {
@@ -131,32 +157,5 @@ function updateGameArea() {
 				return;
 			}
 		}
-		myGameArea.frameNo += 1;
-		if (myGameArea.frameNo == 1 || everyinterval(150)) {
-			x = myGameArea.canvas.width;
-			minHeight = 20;
-			maxHeight = 200;
-			height = Math.floor(
-				Math.random() * (maxHeight - minHeight + 1) + minHeight
-			);
-			minGap = 50;
-			maxGap = 200;
-			gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-			myObstacles.push(
-				new component(10, x - height - gap, "green", x, height + gap)
-			);
-		}
-		for (i = 0; i < myObstacles.length; i += 1) {
-			myObstacles[i].x += -1;
-			myObstacles[i].update();
-		}
-		myGameArea.clear();
-		myBackground.speedX = -1;
-		myBackground.newPos();
-		myBackground.update();
-		myObstacle.x += -1;
-		myObstacle.update();
-		myGamePiece.newPos();
-		myGamePiece.update();
 	}
 }
