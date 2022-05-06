@@ -1,0 +1,2 @@
+var myScore;
+var myBackground;
