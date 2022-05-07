@@ -21,7 +21,6 @@ function component(width, height, color, x, y, type) {
 			ctx.font = this.width + " " + this.height;
 			ctx.fillStyle = color;
 			ctx.fillText(this.text, this.x, this.y);
-		} else {
 		}
 		if (type == "image") {
 			ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -64,9 +63,9 @@ function component(width, height, color, x, y, type) {
 	};
 }
 function move(dir) {
+	myGamePiece.image.src = "jump.png";
 	if (dir == "up") {
 		myGamePiece.speedY = -1;
-		myGamePiece.image.src = "jump.png";
 	}
 	if (dir == "down") {
 		myGamePiece.speedY = 1;

@@ -22,11 +22,12 @@ var myGameArea = {
 			myGameArea.keys[e.keyCode] = false;
 		});
 	},
+clear: function () {
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+},
 	stop: function () {
 		clearInterval(this.interval);
-	},
-	clear: function () {
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	
 	},
 };
 
@@ -67,12 +68,13 @@ function updateGameArea() {
 			myGamePiece.speedX = 1;
 		}
 		if (myGameArea.keys && myGameArea.keys[38]) {
-			myGamePiece.speedY = -10;
+			myGamePiece.speedY = -10; 
 		}
 		if (myGameArea.keys && myGameArea.keys[40]) {
 			myGamePiece.speedY = 1;
 		}
 	}
+	
 	myScore.text = "SCORE: " + +myGameArea.frameNo;
 	myScore.update();
 	{
