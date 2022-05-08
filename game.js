@@ -13,7 +13,7 @@ var myGameArea = {
 		this.context = this.canvas.getContext("2d");
 		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 		this.frameNo = 0;
-		this.interval = setInterval(updateGameArea, 20);
+		this.interval = setInterval(updateGameArea, 5);
 		window.addEventListener("keydown", function (e) {
 			myGameArea.keys = myGameArea.keys || [];
 			myGameArea.keys[e.keyCode] = true;
@@ -49,11 +49,11 @@ function updateGameArea() {
 		height = Math.floor(
 			Math.random() * (maxHeight - minHeight + 1) + minHeight
 		);
-		minGap = 50;
+		minGap = 1;
 		maxGap = 200;
 		gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
 		myObstacles.push(
-			new component(height, 50, "fire.png", gap + 600, 190, "image")
+			new component(height, 80, "fire.png", gap + 600, 225, "image")
 		);
 	}
 	for (i = 0; i < myObstacles.length; i += 1) {
@@ -62,30 +62,45 @@ function updateGameArea() {
 		myGamePiece.speedX = 0;
 		myGamePiece.speedY = 0;
 		if (myGameArea.keys && myGameArea.keys[37]) {
-			myGamePiece.speedX = -1;
+			myGamePiece.speedX = -1; window.onkeydown = function () {
+				move("left")
+				window.onkeyup = function () { clearmove() }
+			}
 		}
 		if (myGameArea.keys && myGameArea.keys[39]) {
-			myGamePiece.speedX = 1;
+			myGamePiece.speedX = 1; window.onkeydown = function () {
+				move("right")
+				window.onkeyup = function () { clearmove() }
+			}
 		}
 		if (myGameArea.keys && myGameArea.keys[38]) {
-			myGamePiece.speedY = -10; 
-		}
-		if (myGameArea.keys && myGameArea.keys[40]) {
-			myGamePiece.speedY = 1;
-		}
-	}
+			myGamePiece.speedY = -3;
+					window.onkeydown = function () {
+						move("up")
+						window.onkeyup = function () {
+							clearmove()
+						}
+					}
+				}
+				if (myGameArea.keys && myGameArea.keys[40]) {
+					myGamePiece.speedY = 1; window.onkeydown = function () {
+						move("down")
+						window.onkeyup = function () { clearmove() }
+					}
+				}
+			}
 	
-	myScore.text = "SCORE: " + +myGameArea.frameNo;
-	myScore.update();
-	{
-		myGamePiece.newPos();
-		myGamePiece.update();
-	}
+			myScore.text = "SCORE: " + +myGameArea.frameNo;
+			myScore.update();
+			{
+				myGamePiece.newPos();
+				myGamePiece.update();
+			}
 
-	function everyinterval(n) {
-		if ((myGameArea.frameNo / n) % 1 == 0) {
-			return true;
+			function everyinterval(n) {
+				if ((myGameArea.frameNo / n) % 1 == 0) {
+					return true;
+				}
+				return false;
+			}
 		}
-		return false;
-	}
-}

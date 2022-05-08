@@ -15,6 +15,7 @@ function component(width, height, color, x, y, type) {
 	this.gravity = 0.05;
 	this.gravitySpeed = 0;
 	this.floor = height + 55;
+	this.bounce = 0.1;
 	this.update = function () {
 		ctx = myGameArea.context;
 		if (this.type == "text") {
@@ -39,8 +40,9 @@ function component(width, height, color, x, y, type) {
 		var rockbottom = myGameArea.canvas.height - this.floor;
 		if (this.y > rockbottom) {
 			this.y = rockbottom;
+			this.gravitySpeed = -(this.gravitySpeed * this.bounce);
 		}
-	};
+	}
 	this.crashWith = function (otherobj) {
 		var myleft = this.x;
 		var myright = this.x + this.width;
@@ -61,22 +63,17 @@ function component(width, height, color, x, y, type) {
 		}
 		return crash;
 	};
+
 }
 function move(dir) {
-	myGamePiece.image.src = "jump.png";
-	if (dir == "up") {
-		myGamePiece.speedY = -1;
-	}
-	if (dir == "down") {
-		myGamePiece.speedY = 1;
-	}
-	if (dir == "left") {
-		myGamePiece.speedX = -1;
-	}
-	if (dir == "right") {
-		myGamePiece.speedX = 1;
-	}
+    if (dir == "up") {myGamePiece.speedY = -1; myGamePiece.image.src = "jump2.png"}
+	if (dir == "down") { myGamePiece.speedY = 1; myGamePiece.image.src = "down.png";}
+    if (dir == "left") {myGamePiece.speedX = -1; myGamePiece.image.src = "back.png" }
+    if (dir == "right") {myGamePiece.speedX = 1; myGamePiece.image.src = "run.png"}
 }
+function accelerate(n) {
+	myGamePiece.gravity = n;
+  }
 
 function clearmove() {
 	myGamePiece.image.src = "stand.png";
